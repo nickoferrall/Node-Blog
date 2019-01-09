@@ -54,18 +54,18 @@ server.get('/api/users/getposts/:id', (req, res) => {
     });
 });
 
-// server.post('/api/users/post', async (req, res) => {
-//   try {
-//     const users = req.body;
-//     const userInfo = await userDb.insert(users);
-//     res.status(201).json(userInfo);
-//   } catch (error) {
-//     console.log('Error from post', error);
-//     res.status(400).json({
-//       errorMessage: 'There was an error while saving the post to the database.'
-//     });
-//   }
-// });
+server.post('/api/users', async (req, res) => {
+  try {
+    const users = req.body;
+    const userInfo = await userDb.insert(users);
+    res.status(201).json(userInfo);
+  } catch (error) {
+    console.log('Error from post', error);
+    res.status(400).json({
+      errorMessage: 'There was an error while saving the post to the database.'
+    });
+  }
+});
 
 server.put('/api/users/:id', async (req, res) => {
   const { id } = req.params;
