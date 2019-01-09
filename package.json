@@ -1,0 +1,28 @@
+{
+  "name": "Node-Blog",
+  "version": "1.0.0",
+  "description": "## Topics",
+  "main": "knexfile.js",
+  "scripts": {
+    "start": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickoferrall/Node-Blog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nickoferrall/Node-Blog/issues"
+  },
+  "homepage": "https://github.com/nickoferrall/Node-Blog#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "knex": "^0.16.3",
+    "sqlite3": "^4.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
+}
