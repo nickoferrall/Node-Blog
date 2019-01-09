@@ -54,4 +54,34 @@ server.get('/api/users/getposts/:id', (req, res) => {
     });
 });
 
+// server.post('/api/users/post', async (req, res) => {
+//   try {
+//     const users = req.body;
+//     const userInfo = await userDb.insert(users);
+//     res.status(201).json(userInfo);
+//   } catch (error) {
+//     console.log('Error from post', error);
+//     res.status(400).json({
+//       errorMessage: 'There was an error while saving the post to the database.'
+//     });
+//   }
+// });
+
+server.delete('/api/users/:id', (req, res) => {
+  userDb
+    .remove(req.params.id)
+    .then(count => {
+      if (count === 0) {
+        res.status(404).json({
+          message: 'The user with this ID does not exist.'
+        });
+      } else {
+        res.status(200).json({ message: 'The user has been removed.' });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'This user could not be removed.' });
+    });
+});
+
 module.exports = server;
