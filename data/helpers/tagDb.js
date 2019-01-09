@@ -23,5 +23,7 @@ module.exports = {
     return db('tags')
       .where('id', id)
       .del();
-  },
+  }
 };
+
+//
