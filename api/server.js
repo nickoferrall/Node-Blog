@@ -67,6 +67,21 @@ server.get('/api/users/getposts/:id', (req, res) => {
 //   }
 // });
 
+server.put('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+  const changes = req.body;
+  userDb
+    .update(id, changes)
+    .then(count => {
+      res.status(200).json({ message: `${count} has been updated.` });
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ message: 'The post information could not be modified.' });
+    });
+});
+
 server.delete('/api/users/:id', (req, res) => {
   userDb
     .remove(req.params.id)
