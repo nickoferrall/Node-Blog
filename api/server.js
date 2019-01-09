@@ -40,4 +40,18 @@ server.get('/api/users/:id', (req, res) => {
     });
 });
 
+server.get('/api/users/getposts/:id', (req, res) => {
+  const { id } = req.params;
+  userDb
+    .getUserPosts(id)
+    .then(users => {
+      res.status(200).json(users);
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: 'The post information has not been received.'
+      });
+    });
+});
+
 module.exports = server;
