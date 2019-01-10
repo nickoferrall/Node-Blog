@@ -13,7 +13,6 @@ const postDb = require('../data/helpers/postDb');
 configureMiddleware(server);
 
 const upperMiddleware = (req, res, next) => {
-  console.log('Req body is..', req.body);
   req.body.name = req.body.name.toUpperCase();
   if (req.body.name.length > 128) {
     res.status(422).json({ message: 'The name is too long!' });
@@ -28,38 +27,32 @@ server.get('/', (req, res) => {
 
 // Users CRUD
 
-server.get('/api/users/:id', (req, res) => {
-  const { id } = req.params;
-  userDb
-    .get(id)
-    .then(users => {
-      if (users.length === 0) {
-        res
+server.get('/api/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const users = await userDb.get(id);
+    users === undefined
+      ? res
           .status(404)
-          .json({ message: 'The user with the specified ID does not exist.' });
-      } else {
-        res.status(200).json(users);
-      }
-    })
-    .catch(err => {
-      res.status(500).json({
-        error: 'The user information has not been received.'
-      });
+          .json({ message: 'The user with the specified ID does not exist.' })
+      : res.status(200).json(users);
+  } catch (error) {
+    res.status(400).json({
+      errorMessage: 'There user information has not been received.'
     });
+  }
 });
 
-server.get('/api/users/getposts/:id', (req, res) => {
-  const { id } = req.params;
-  userDb
-    .getUserPosts(id)
-    .then(users => {
-      res.status(200).json(users);
-    })
-    .catch(err => {
-      res.status(500).json({
-        error: 'The user information has not been received.'
-      });
+server.get('/api/users/getposts/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const users = await userDb.getUserPosts(id);
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({
+      error: 'The user information has not been received.'
     });
+  }
 });
 
 server.post('/api/users', upperMiddleware, async (req, res) => {
@@ -108,18 +101,16 @@ server.delete('/api/users/:id', (req, res) => {
 
 // Posts CRUD
 
-server.get('/api/posts/:id', (req, res) => {
-  const { id } = req.params;
-  postDb
-    .get(id)
-    .then(posts => {
-      res.status(200).json(posts);
-    })
-    .catch(err => {
-      res.status(500).json({
-        error: 'The post information has not been received.'
-      });
+server.get('/api/posts/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const posts = await postDb.get(id);
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(400).json({
+      errorMessage: 'There post information has not been received.'
     });
+  }
 });
 
 server.get('/api/posts/gettags/:id', (req, res) => {
@@ -138,9 +129,8 @@ server.get('/api/posts/gettags/:id', (req, res) => {
 
 server.post('/api/posts', async (req, res) => {
   try {
-    const myPosts = req.body;
-    const myPostInfo = await postDb.insert(myPosts);
-    res.status(201).json(myPostInfo);
+    const postId = await postDb.insert(req.body);
+    res.status(201).json(postId);
   } catch (error) {
     if (error.errno === 19) {
       res
