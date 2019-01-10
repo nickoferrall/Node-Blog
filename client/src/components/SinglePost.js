@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
+// import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const SinglePostContainerDiv = styled.div`
   width: 60%;
@@ -9,12 +12,15 @@ const SinglePostContainerDiv = styled.div`
   align-content: center;
 `;
 
-const SinglePostWrapperDiv = styled.div`
+const SinglePostWrapperDiv = styled(Link)`
   align-content: center;
   margin-top: 30%;
   padding: 5%;
   background-color: #f2f2f2;
   border-radius: 2.5%;
+  text-decoration: none;
+  color: black;
+  cursor: pointer;
 `;
 
 const SinglePostTitle = styled.div`
@@ -22,22 +28,44 @@ const SinglePostTitle = styled.div`
   padding: 5%;
 `;
 
-const Post = props => {
-  console.log('single post props', props);
-  return (
-    <SinglePostContainerDiv>
-      <SinglePostWrapperDiv>
-        {props.posts.data.map((post, index) => {
-          return post.id === parseInt(props.match.params.id) ? (
-            <div key={index}>
-              <SinglePostTitle>{post.name}</SinglePostTitle>
-              {/* <div>{post.contents}</div> */}
-            </div>
-          ) : null;
-        })}
-      </SinglePostWrapperDiv>
-    </SinglePostContainerDiv>
-  );
-};
+class SinglePost extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      props: props,
+      posts: props.posts,
+      id: props.match.params.id,
+      tags: []
+    };
+  }
 
-export default Post;
+  componentDidMount() {
+    console.log('Mounting from single post');
+    axios
+      .get(`http://localhost:9000/api/tags/${this.state.id}`)
+      .then(response => {
+        this.setState({
+          tags: response.data
+        });
+      });
+  }
+
+  render() {
+    return (
+      <SinglePostContainerDiv>
+        <SinglePostWrapperDiv to={'/'}>
+          {this.state.posts.data.map((post, index) => {
+            return post.id === parseInt(this.state.id) ? (
+              <div key={index}>
+                <SinglePostTitle>{post.name}</SinglePostTitle>
+              </div>
+            ) : null;
+          })}
+          <div>Tags: {this.state.tags.tag}</div>
+        </SinglePostWrapperDiv>
+      </SinglePostContainerDiv>
+    );
+  }
+}
+
+export default SinglePost;

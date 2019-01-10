@@ -24,9 +24,15 @@ class App extends Component {
         isLoaded: true
       });
     });
+    axios.get('http://localhost:9000/api/tags/:id').then(response => {
+      this.setState({
+        tags: response
+      });
+    });
   }
 
   render() {
+    console.log('tags from app', this.state.tags);
     return (
       <div className="App">
         <Route
@@ -43,7 +49,13 @@ class App extends Component {
         <div>
           <Route
             path="/post/:id"
-            render={props => <SinglePost {...props} posts={this.state.posts} />}
+            render={props => (
+              <SinglePost
+                {...props}
+                posts={this.state.posts}
+                tags={this.state.tags}
+              />
+            )}
           />
         </div>
       </div>

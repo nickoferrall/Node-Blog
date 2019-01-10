@@ -30,18 +30,16 @@ const TitleDiv = styled.div`
   margin-bottom: 5%;
 `;
 
-const ContentsDiv = styled.div`
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: 100;
-`;
-
 const PostList = props => {
   console.log('props from post list', props);
   return (
     <PostContainerDiv>
       <StyledLink to={`/post/${props.post.id}`}>
-        <TitleDiv>{props.post.name}</TitleDiv>
-        {/* <ContentsDiv>{props.post.contents}</ContentsDiv> */}
+        <TitleDiv>
+          {props.post.name.length < 10
+            ? props.post.name
+            : props.post.name.substring(0, 10)}
+        </TitleDiv>
       </StyledLink>
     </PostContainerDiv>
   );
