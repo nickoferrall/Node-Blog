@@ -122,7 +122,7 @@ server.get('/api/posts/:id', (req, res) => {
     });
 });
 
-server.get('/api/posts/getTags/:id', (req, res) => {
+server.get('/api/posts/gettags/:id', (req, res) => {
   const { id } = req.params;
   postDb
     .getPostTags(id)
@@ -136,22 +136,28 @@ server.get('/api/posts/getTags/:id', (req, res) => {
     });
 });
 
-// server.post('/api/posts', async (req, res) => {
-//   try {
-//     const posts = req.body;
-//     const postInfo = await postDb.insert(posts);
-//     res.status(201).json(postInfo);
-//   } catch (error) {
-//     res.status(400).json({
-//       errorMessage: 'There was an error saving the post.'
-//     });
-//   }
-// });
+server.post('/api/posts', async (req, res) => {
+  try {
+    const myPosts = req.body;
+    const myPostInfo = await postDb.insert(myPosts);
+    res.status(201).json(myPostInfo);
+  } catch (error) {
+    if (error.errno === 19) {
+      res
+        .status(200)
+        .json({ error: 'You need to include the text and the userId.' });
+    } else {
+      res.status(400).json({
+        errorMessage:
+          'There was an error while saving the post to the database.'
+      });
+    }
+  }
+});
 
 server.put('/api/posts/:id', async (req, res) => {
   const { id } = req.params;
   const changes = req.body;
-  console.log('Changes from put', id);
   postDb
     .update(id, changes)
     .then(count => {
