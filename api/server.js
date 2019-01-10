@@ -1,14 +1,10 @@
 const express = require('express');
-const helmet = require('helmet');
-// morgan is a logger - it reads the request and gives you info about it
-const morgan = require('morgan');
 
 const configureMiddleware = require('../config/middleware');
 const server = express();
 const userDb = require('../data/helpers/userDb');
 const postDb = require('../data/helpers/postDb');
-
-// Config middleware
+const tagDb = require('../data/helpers/tagDb');
 
 configureMiddleware(server);
 
@@ -20,17 +16,43 @@ const upperMiddleware = (req, res, next) => {
   next();
 };
 
-// Config endpoints - route handlers are middleware!
 server.get('/', (req, res) => {
-  res.status(200).json({ api: 'running' });
+  res.status(200).json({ api: 'Running!' });
+});
+
+// Tags
+server.get('/api/tags/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const tags = await tagDb.get(id);
+    tags === undefined
+      ? res
+          .status(404)
+          .json({ message: 'The user with the specified ID does not exist.' })
+      : res.status(200).json(tags);
+  } catch (error) {
+    res.status(400).json({
+      errorMessage: 'Unable to get the tag information.'
+    });
+  }
 });
 
 // Users CRUD
+server.get('/api/users', async (req, res) => {
+  try {
+    const users = await userDb.get();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(400).json({
+      errorMessage: 'Unable to get users.'
+    });
+  }
+});
 
 server.get('/api/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const users = await userDb.get(id);
+    const users = await userDb.getUserPosts(id);
     users === undefined
       ? res
           .status(404)
@@ -38,19 +60,7 @@ server.get('/api/users/:id', async (req, res) => {
       : res.status(200).json(users);
   } catch (error) {
     res.status(400).json({
-      errorMessage: 'There user information has not been received.'
-    });
-  }
-});
-
-server.get('/api/users/getposts/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const users = await userDb.getUserPosts(id);
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({
-      error: 'The user information has not been received.'
+      errorMessage: 'The user information has not been received.'
     });
   }
 });
@@ -100,7 +110,6 @@ server.delete('/api/users/:id', (req, res) => {
 });
 
 // Posts CRUD
-
 server.get('/api/posts/:id', async (req, res) => {
   try {
     const { id } = req.params;
