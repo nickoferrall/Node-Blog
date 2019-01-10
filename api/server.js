@@ -8,6 +8,15 @@ const morgan = require('morgan');
 const server = express();
 const userDb = require('../data/helpers/userDb');
 
+const upperMiddleware = (req, res, next) => {
+  console.log('Req body is..', req.body);
+  req.body.name = req.body.name.toUpperCase();
+  if (req.body.name.length > 128) {
+    res.status(422).json({ message: 'The name is too long!' });
+  }
+  next();
+};
+
 // Config middleware
 server.use(express.json());
 server.use(helmet());
@@ -54,20 +63,19 @@ server.get('/api/users/getposts/:id', (req, res) => {
     });
 });
 
-server.post('/api/users', async (req, res) => {
+server.post('/api/users', upperMiddleware, async (req, res) => {
   try {
     const users = req.body;
     const userInfo = await userDb.insert(users);
     res.status(201).json(userInfo);
   } catch (error) {
-    console.log('Error from post', error);
     res.status(400).json({
       errorMessage: 'There was an error while saving the post to the database.'
     });
   }
 });
 
-server.put('/api/users/:id', async (req, res) => {
+server.put('/api/users/:id', upperMiddleware, async (req, res) => {
   const { id } = req.params;
   const changes = req.body;
   userDb
