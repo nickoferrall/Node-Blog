@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -32,7 +31,6 @@ class SinglePost extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      props: props,
       posts: props.posts,
       id: props.match.params.id,
       tags: []
@@ -40,7 +38,6 @@ class SinglePost extends Component {
   }
 
   componentDidMount() {
-    console.log('Mounting from single post');
     axios
       .get(`http://localhost:9000/api/tags/${this.state.id}`)
       .then(response => {

@@ -24,11 +24,6 @@ class App extends Component {
         isLoaded: true
       });
     });
-    axios.get('http://localhost:9000/api/tags/:id').then(response => {
-      this.setState({
-        tags: response
-      });
-    });
   }
 
   render() {

@@ -17,7 +17,6 @@ const PCWrapperDiv = styled.div`
 `;
 
 const PostContainer = props => {
-  console.log('props from post container', props);
   return (
     <PostContainerDiv>
       <PCWrapperDiv>
