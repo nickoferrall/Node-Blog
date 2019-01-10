@@ -164,4 +164,16 @@ server.put('/api/posts/:id', async (req, res) => {
     });
 });
 
+server.delete('/api/posts/:id', (req, res) => {
+  postDb.remove(req.params.id).then(count => {
+    if (count === 0) {
+      res.status(404).json({
+        message: 'The user with this id does not exist.'
+      });
+    } else {
+      res.status(200).json({ message: 'The user has been removed.' });
+    }
+  });
+});
+
 module.exports = server;
