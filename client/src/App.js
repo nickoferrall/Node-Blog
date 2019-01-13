@@ -16,9 +16,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log('Component mounting!');
     axios.get('http://localhost:9000/api/users').then(response => {
-      console.log('response from cdm', response);
       this.setState({
         posts: response,
         isLoaded: true
@@ -27,7 +25,6 @@ class App extends Component {
   }
 
   render() {
-    console.log('tags from app', this.state.tags);
     return (
       <div className="App">
         <Route
